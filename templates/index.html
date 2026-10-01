@@ -1,174 +1,457 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Supply chain analytics</title>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
-:root{--bg:#eef1f0;--panel:#fff;--ink:#16302d;--mute:#5d726f;--line:#d7dfdd;--teal:#0f766e;--amber:#d99a1b;--rust:#b4452a;--sky:#4a86a8;--plum:#7b5c8e;
---font:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font)}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:20px 32px;background:var(--ink);color:#f2f6f5}
-header h1{margin:0;font-size:20px;font-weight:700}
-header small{display:block;color:#a9c0bc;font-size:13px}
-.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-select,.btn{font:inherit;font-size:14px;padding:8px 12px;border-radius:6px;border:1px solid #3d5a56;background:#21413d;color:#f2f6f5;cursor:pointer}
-.btn{background:var(--amber);border-color:var(--amber);color:#2a1d00;font-weight:600}
-:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
-main{max-width:1280px;margin:0 auto;padding:24px 32px 56px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--panel);border:1px solid var(--line);border-radius:10px}
-.kpi{padding:16px 20px;border-right:1px solid var(--line)}
-.kpi:last-child{border-right:0}
-.kpi b{display:block;font-size:26px;font-weight:700;letter-spacing:-.5px}
-.kpi span{color:var(--mute);font-size:13px}
-.find{margin:20px 0;padding:16px 20px 16px 24px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:6px}
-.find h2{margin:0 0 6px;font-size:15px}
-.find ul{margin:0;padding-left:18px}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.panel{grid-column:span 6;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
-.panel.w4{grid-column:span 4}.panel.w12{grid-column:span 12}
-.panel h3{margin:0 0 2px;font-size:15px}
-.panel p{margin:0 0 10px;color:var(--mute);font-size:13px}
-.ch{position:relative;height:260px}
-.tablewrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th:first-child,td:first-child{text-align:left}
-th{font-weight:600;color:var(--mute);font-size:13px}
-.bad{color:var(--rust);font-weight:600}
-#drop{max-width:560px;margin:80px auto;padding:48px 32px;text-align:center;background:var(--panel);border:2px dashed var(--teal);border-radius:12px}
-#drop.over{background:#e3f1ef}
-#msg{color:var(--rust);margin-top:12px;min-height:1.4em}
-.hide{display:none!important}
-@media(max-width:900px){.panel,.panel.w4{grid-column:span 12}main{padding:16px}header{padding:16px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supply chain analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #eef1f0;
+      --panel: #fff;
+      --ink: #16302d;
+      --mute: #5d726f;
+      --line: #d7dfdd;
+      --teal: #0f766e;
+      --amber: #d99a1b;
+      --rust: #b4452a;
+      --sky: #4a86a8;
+      --plum: #7b5c8e;
+      --font: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 var(--font)
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      background: var(--ink);
+      color: #f2f6f5
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700
+    }
+
+    header small {
+      display: block;
+      color: #a9c0bc;
+      font-size: 13px
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    select,
+    .btn {
+      font: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #3d5a56;
+      background: #21413d;
+      color: #f2f6f5;
+      cursor: pointer
+    }
+
+    .btn {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #2a1d00;
+      font-weight: 600
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--sky);
+      outline-offset: 2px
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 32px 56px
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px
+    }
+
+    .kpi {
+      padding: 16px 20px;
+      border-right: 1px solid var(--line)
+    }
+
+    .kpi:last-child {
+      border-right: 0
+    }
+
+    .kpi b {
+      display: block;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -.5px
+    }
+
+    .kpi span {
+      color: var(--mute);
+      font-size: 13px
+    }
+
+    .find {
+      margin: 20px 0;
+      padding: 16px 20px 16px 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: 6px
+    }
+
+    .find h2 {
+      margin: 0 0 6px;
+      font-size: 15px
+    }
+
+    .find ul {
+      margin: 0;
+      padding-left: 18px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px
+    }
+
+    .panel {
+      grid-column: span 6;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px 18px;
+      min-width: 0
+    }
+
+    .panel.w4 {
+      grid-column: span 4
+    }
+
+    .panel.w12 {
+      grid-column: span 12
+    }
+
+    .panel h3 {
+      margin: 0 0 2px;
+      font-size: 15px
+    }
+
+    .panel p {
+      margin: 0 0 10px;
+      color: var(--mute);
+      font-size: 13px
+    }
+
+    .ch {
+      position: relative;
+      height: 260px
+    }
+
+    .tablewrap {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+      text-align: right;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--mute);
+      font-size: 13px
+    }
+
+    .bad {
+      color: var(--rust);
+      font-weight: 600
+    }
+
+    #drop {
+      max-width: 560px;
+      margin: 80px auto;
+      padding: 48px 32px;
+      text-align: center;
+      background: var(--panel);
+      border: 2px dashed var(--teal);
+      border-radius: 12px
+    }
+
+    #drop.over {
+      background: #e3f1ef
+    }
+
+    #msg {
+      color: var(--rust);
+      margin-top: 12px;
+      min-height: 1.4em
+    }
+
+    .hide {
+      display: none !important
+    }
+
+    @media(max-width:900px) {
+
+      .panel,
+      .panel.w4 {
+        grid-column: span 12
+      }
+
+      main {
+        padding: 16px
+      }
+
+      header {
+        padding: 16px
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <div><h1>Supply chain analytics</h1><small id="meta">No data loaded</small></div>
-  <div class="tools">
-    <label for="pt" class="hide">Product type</label>
-    <select id="pt" class="hide"><option value="">All product types</option></select>
-    <button class="btn" id="up">Upload CSV</button>
-    <input type="file" id="file" accept=".csv" class="hide">
-  </div>
-</header>
-<main>
-  <div id="drop">
-    <h2 style="margin-top:0">Add your sales and supply data</h2>
-    <p>Drop a CSV here, or choose a file. It needs these columns: Product type, SKU, Price, Number of products sold, Revenue generated.</p>
-    <button class="btn" id="pick">Choose CSV</button>
-    <div id="msg" role="alert"></div>
-  </div>
-  <div id="dash" class="hide">
-    <section class="kpis" id="kpis"></section>
-    <section class="find"><h2>What stands out</h2><ul id="find"></ul></section>
-    <section class="grid">
-      <div class="panel"><h3>Revenue by product type</h3><p>Total revenue generated</p><div class="ch"><canvas id="c1"></canvas></div></div>
-      <div class="panel"><h3>Revenue by customer group</h3><p>Share of total revenue</p><div class="ch"><canvas id="c2"></canvas></div></div>
-      <div class="panel"><h3>Revenue by location</h3><p>Where suppliers ship from</p><div class="ch"><canvas id="c3"></canvas></div></div>
-      <div class="panel"><h3>Price vs units sold</h3><p>One dot per SKU</p><div class="ch"><canvas id="c4"></canvas></div></div>
-      <div class="panel"><h3>Carriers</h3><p>Average shipping cost and shipping time</p><div class="ch"><canvas id="c5"></canvas></div></div>
-      <div class="panel w4"><h3>Transport modes</h3><p>Average cost</p><div class="ch"><canvas id="c6"></canvas></div></div>
-      <div class="panel w4"><h3>Inspection results</h3><p>SKUs by outcome</p><div class="ch"><canvas id="c7"></canvas></div></div>
-      <div class="panel w4"><h3>Defect rate by supplier</h3><p>Average, in percent</p><div class="ch"><canvas id="c8"></canvas></div></div>
-      <div class="panel w12"><h3>Supplier scorecard</h3><p>Lower defects, lead time and cost are better</p><div class="tablewrap"><table id="t1"></table></div></div>
-      <div class="panel"><h3>Restock risk</h3><p>SKUs with stock below their order quantity, largest gap first</p><div class="tablewrap"><table id="t2"></table></div></div>
-      <div class="panel"><h3>Top SKUs by revenue</h3><p>Ten best performers</p><div class="tablewrap"><table id="t3"></table></div></div>
-    </section>
-  </div>
-</main>
-<script>
-const $ = id => document.getElementById(id);
-const C = ["#0f766e","#d99a1b","#4a86a8","#b4452a","#7b5c8e","#6a994e"];
-const nf = (v, d=0) => v == null ? "–" : Number(v).toLocaleString(undefined,{maximumFractionDigits:d});
-Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
-Chart.defaults.color = "#5d726f";
-const charts = {};
-function chart(id, cfg){ charts[id]?.destroy(); charts[id] = new Chart($(id), cfg); }
-const base = {responsive:true, maintainAspectRatio:false};
-const bar = (id, rows, key, label, opts={}) => chart(id, {type:"bar",
-  data:{labels:rows.map(r=>r.name), datasets:[{label, data:rows.map(r=>r[key]), backgroundColor:opts.color||C[0], borderRadius:4}]},
-  options:{...base, indexAxis:opts.h?"y":"x", plugins:{legend:{display:false}}}});
-const donut = (id, rows, key) => chart(id, {type:"doughnut",
-  data:{labels:rows.map(r=>r.name), datasets:[{data:rows.map(r=>r[key]), backgroundColor:C, borderWidth:2}]},
-  options:{...base, cutout:"58%", plugins:{legend:{position:"right"}}}});
+  <header>
+    <div>
+      <h1>Supply Chain Analytics</h1><small id="meta">No data loaded</small>
+    </div>
+    <div class="tools">
+      <label for="pt" class="hide">Product type</label>
+      <select id="pt" class="hide">
+        <option value="">All product types</option>
+      </select>
+      <button class="btn" id="up">Upload CSV</button>
+      <input type="file" id="file" accept=".csv" class="hide">
+    </div>
+  </header>
+  <main>
+    <div id="drop">
+      <h2 style="margin-top:0">Add your sales and supply data</h2>
+      <p>Drop a CSV here, or choose a file. It needs these columns: Product type, SKU, Price, Number of products sold,
+        Revenue generated.</p>
+      <button class="btn" id="pick">Choose CSV</button>
+      <div id="msg" role="alert"></div>
+    </div>
+    <div id="dash" class="hide">
+      <section class="kpis" id="kpis"></section>
+      <section class="find">
+        <h2>What stands out</h2>
+        <ul id="find"></ul>
+      </section>
+      <section class="grid">
+        <div class="panel">
+          <h3>Revenue by product type</h3>
+          <p>Total revenue generated</p>
+          <div class="ch"><canvas id="c1"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>Revenue by customer group</h3>
+          <p>Share of total revenue</p>
+          <div class="ch"><canvas id="c2"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>Revenue by location</h3>
+          <p>Where suppliers ship from</p>
+          <div class="ch"><canvas id="c3"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>Price vs units sold</h3>
+          <p>One dot per SKU</p>
+          <div class="ch"><canvas id="c4"></canvas></div>
+        </div>
+        <div class="panel">
+          <h3>Carriers</h3>
+          <p>Average shipping cost and shipping time</p>
+          <div class="ch"><canvas id="c5"></canvas></div>
+        </div>
+        <div class="panel w4">
+          <h3>Transport modes</h3>
+          <p>Average cost</p>
+          <div class="ch"><canvas id="c6"></canvas></div>
+        </div>
+        <div class="panel w4">
+          <h3>Inspection results</h3>
+          <p>SKUs by outcome</p>
+          <div class="ch"><canvas id="c7"></canvas></div>
+        </div>
+        <div class="panel w4">
+          <h3>Defect rate by supplier</h3>
+          <p>Average, in percent</p>
+          <div class="ch"><canvas id="c8"></canvas></div>
+        </div>
+        <div class="panel w12">
+          <h3>Supplier scorecard</h3>
+          <p>Lower defects, lead time and cost are better</p>
+          <div class="tablewrap">
+            <table id="t1"></table>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Restock risk</h3>
+          <p>SKUs with stock below their order quantity, largest gap first</p>
+          <div class="tablewrap">
+            <table id="t2"></table>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Top SKUs by revenue</h3>
+          <p>Ten best performers</p>
+          <div class="tablewrap">
+            <table id="t3"></table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const $ = id => document.getElementById(id);
+    const C = ["#0f766e", "#d99a1b", "#4a86a8", "#b4452a", "#7b5c8e", "#6a994e"];
+    const nf = (v, d = 0) => v == null ? "–" : Number(v).toLocaleString(undefined, { maximumFractionDigits: d });
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    Chart.defaults.color = "#5d726f";
+    const charts = {};
+    function chart(id, cfg) { charts[id]?.destroy(); charts[id] = new Chart($(id), cfg); }
+    const base = { responsive: true, maintainAspectRatio: false };
+    const bar = (id, rows, key, label, opts = {}) => chart(id, {
+      type: "bar",
+      data: { labels: rows.map(r => r.name), datasets: [{ label, data: rows.map(r => r[key]), backgroundColor: opts.color || C[0], borderRadius: 4 }] },
+      options: { ...base, indexAxis: opts.h ? "y" : "x", plugins: { legend: { display: false } } }
+    });
+    const donut = (id, rows, key) => chart(id, {
+      type: "doughnut",
+      data: { labels: rows.map(r => r.name), datasets: [{ data: rows.map(r => r[key]), backgroundColor: C, borderWidth: 2 }] },
+      options: { ...base, cutout: "58%", plugins: { legend: { position: "right" } } }
+    });
 
-function table(id, cols, rows, empty){
-  if(!rows.length){ $(id).innerHTML = `<tr><td>${empty}</td></tr>`; return; }
-  $(id).innerHTML = "<thead><tr>"+cols.map(c=>`<th>${c[1]}</th>`).join("")+"</tr></thead><tbody>"+
-    rows.map(r=>"<tr>"+cols.map(c=>`<td class="${c[3]&&c[3](r)?'bad':''}">${c[2]?c[2](r[c[0]]):r[c[0]]}</td>`).join("")+"</tr>").join("")+"</tbody>";
-}
+    function table(id, cols, rows, empty) {
+      if (!rows.length) { $(id).innerHTML = `<tr><td>${empty}</td></tr>`; return; }
+      $(id).innerHTML = "<thead><tr>" + cols.map(c => `<th>${c[1]}</th>`).join("") + "</tr></thead><tbody>" +
+        rows.map(r => "<tr>" + cols.map(c => `<td class="${c[3] && c[3](r) ? 'bad' : ''}">${c[2] ? c[2](r[c[0]]) : r[c[0]]}</td>`).join("") + "</tr>").join("") + "</tbody>";
+    }
 
-function render(d){
-  const k = d.kpis;
-  $("meta").textContent = `${d.file} · ${d.rows} rows`;
-  $("kpis").innerHTML = [
-    [nf(k.revenue), "Total revenue"], [nf(k.units), "Units sold"], [nf(k.skus), "SKUs"],
-    [nf(k.avg_price,2), "Average price"], [nf(k.defect,2)+"%", "Average defect rate"],
-    [nf(k.ship_cost,2), "Average shipping cost"], [nf(k.lead_time,1)+" d", "Average lead time"]
-  ].map(x=>`<div class="kpi"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
-  $("find").innerHTML = d.findings.map(f=>`<li>${f}</li>`).join("");
+    function render(d) {
+      const k = d.kpis;
+      $("meta").textContent = `${d.file} · ${d.rows} rows`;
+      $("kpis").innerHTML = [
+        [nf(k.revenue), "Total revenue"], [nf(k.units), "Units sold"], [nf(k.skus), "SKUs"],
+        [nf(k.avg_price, 2), "Average price"], [nf(k.defect, 2) + "%", "Average defect rate"],
+        [nf(k.ship_cost, 2), "Average shipping cost"], [nf(k.lead_time, 1) + " d", "Average lead time"]
+      ].map(x => `<div class="kpi"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+      $("find").innerHTML = d.findings.map(f => `<li>${f}</li>`).join("");
 
-  bar("c1", d.by_product, "revenue", "Revenue");
-  donut("c2", d.by_demographic, "revenue");
-  bar("c3", d.by_location, "revenue", "Revenue", {h:true, color:C[2]});
-  const groups = [...new Set(d.scatter.map(s=>s.product_type))];
-  chart("c4", {type:"scatter", data:{datasets:groups.map((g,i)=>({label:g,
-      data:d.scatter.filter(s=>s.product_type===g).map(s=>({x:s.price,y:s.units})),
-      backgroundColor:C[i%C.length]+"cc", pointRadius:4}))},
-    options:{...base, scales:{x:{title:{display:true,text:"Price"}}, y:{title:{display:true,text:"Units sold"}}}}});
-  chart("c5", {type:"bar", data:{labels:d.by_carrier.map(r=>r.name), datasets:[
-      {label:"Avg shipping cost", data:d.by_carrier.map(r=>r.cost), backgroundColor:C[0], borderRadius:4, yAxisID:"y"},
-      {label:"Avg shipping days", data:d.by_carrier.map(r=>r.days), backgroundColor:C[1], borderRadius:4, yAxisID:"y1"}]},
-    options:{...base, scales:{y:{title:{display:true,text:"Cost"}}, y1:{position:"right", grid:{drawOnChartArea:false}, title:{display:true,text:"Days"}}}}});
-  bar("c6", d.by_mode, "cost", "Avg cost", {color:C[4]});
-  donut("c7", d.by_inspection, "count");
-  bar("c8", d.supplier, "defect", "Defect rate", {color:C[3]});
+      bar("c1", d.by_product, "revenue", "Revenue");
+      donut("c2", d.by_demographic, "revenue");
+      bar("c3", d.by_location, "revenue", "Revenue", { h: true, color: C[2] });
+      const groups = [...new Set(d.scatter.map(s => s.product_type))];
+      chart("c4", {
+        type: "scatter", data: {
+          datasets: groups.map((g, i) => ({
+            label: g,
+            data: d.scatter.filter(s => s.product_type === g).map(s => ({ x: s.price, y: s.units })),
+            backgroundColor: C[i % C.length] + "cc", pointRadius: 4
+          }))
+        },
+        options: { ...base, scales: { x: { title: { display: true, text: "Price" } }, y: { title: { display: true, text: "Units sold" } } } }
+      });
+      chart("c5", {
+        type: "bar", data: {
+          labels: d.by_carrier.map(r => r.name), datasets: [
+            { label: "Avg shipping cost", data: d.by_carrier.map(r => r.cost), backgroundColor: C[0], borderRadius: 4, yAxisID: "y" },
+            { label: "Avg shipping days", data: d.by_carrier.map(r => r.days), backgroundColor: C[1], borderRadius: 4, yAxisID: "y1" }]
+        },
+        options: { ...base, scales: { y: { title: { display: true, text: "Cost" } }, y1: { position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "Days" } } } }
+      });
+      bar("c6", d.by_mode, "cost", "Avg cost", { color: C[4] });
+      donut("c7", d.by_inspection, "count");
+      bar("c8", d.supplier, "defect", "Defect rate", { color: C[3] });
 
-  table("t1", [["name","Supplier"],["skus","SKUs"],["revenue","Revenue",v=>nf(v)],["defect","Defect %",v=>nf(v,2)],
-    ["lead_time","Lead time (d)",v=>nf(v,1)],["mfg_cost","Mfg cost",v=>nf(v,2)],["fails","Failed inspections"]], d.supplier, "No supplier data.");
-  table("t2", [["sku","SKU"],["product_type","Type"],["stock_levels","Stock"],["order_quantities","Order qty"],
-    ["gap","Gap",null,()=>true]], d.risk, "No SKUs are below their order quantity.");
-  table("t3", [["sku","SKU"],["product_type","Type"],["price","Price",v=>nf(v,2)],["number_of_products_sold","Units",v=>nf(v)],
-    ["revenue_generated","Revenue",v=>nf(v)]], d.top, "No data.");
-}
+      table("t1", [["name", "Supplier"], ["skus", "SKUs"], ["revenue", "Revenue", v => nf(v)], ["defect", "Defect %", v => nf(v, 2)],
+      ["lead_time", "Lead time (d)", v => nf(v, 1)], ["mfg_cost", "Mfg cost", v => nf(v, 2)], ["fails", "Failed inspections"]], d.supplier, "No supplier data.");
+      table("t2", [["sku", "SKU"], ["product_type", "Type"], ["stock_levels", "Stock"], ["order_quantities", "Order qty"],
+      ["gap", "Gap", null, () => true]], d.risk, "No SKUs are below their order quantity.");
+      table("t3", [["sku", "SKU"], ["product_type", "Type"], ["price", "Price", v => nf(v, 2)], ["number_of_products_sold", "Units", v => nf(v)],
+      ["revenue_generated", "Revenue", v => nf(v)]], d.top, "No data.");
+    }
 
-async function load(){
-  const pt = $("pt").value;
-  const res = await fetch("/api/analytics" + (pt ? "?product_type="+encodeURIComponent(pt) : ""));
-  const d = await res.json();
-  const has = !d.empty && !d.error;
-  $("drop").classList.toggle("hide", has);
-  $("dash").classList.toggle("hide", !has);
-  $("pt").classList.toggle("hide", !has);
-  if(!has) return;
-  if($("pt").options.length === 1)
-    d.product_types.forEach(t => $("pt").add(new Option(t[0].toUpperCase()+t.slice(1), t)));
-  render(d);
-}
+    async function load() {
+      const pt = $("pt").value;
+      const res = await fetch("/api/analytics" + (pt ? "?product_type=" + encodeURIComponent(pt) : ""));
+      const d = await res.json();
+      const has = !d.empty && !d.error;
+      $("drop").classList.toggle("hide", has);
+      $("dash").classList.toggle("hide", !has);
+      $("pt").classList.toggle("hide", !has);
+      if (!has) return;
+      if ($("pt").options.length === 1)
+        d.product_types.forEach(t => $("pt").add(new Option(t[0].toUpperCase() + t.slice(1), t)));
+      render(d);
+    }
 
-async function upload(f){
-  $("msg").textContent = "";
-  if(!f) return;
-  const fd = new FormData(); fd.append("file", f);
-  const r = await fetch("/api/upload", {method:"POST", body:fd});
-  const j = await r.json();
-  if(!r.ok){ $("msg").textContent = j.error; return; }
-  $("pt").length = 1; $("pt").value = "";
-  load();
-}
-["up","pick"].forEach(id => $(id).onclick = () => $("file").click());
-$("file").onchange = e => { upload(e.target.files[0]); e.target.value = ""; };
-$("pt").onchange = load;
-const dz = $("drop");
-dz.ondragover = e => { e.preventDefault(); dz.classList.add("over"); };
-dz.ondragleave = () => dz.classList.remove("over");
-dz.ondrop = e => { e.preventDefault(); dz.classList.remove("over"); upload(e.dataTransfer.files[0]); };
-load();
-</script>
+    async function upload(f) {
+      $("msg").textContent = "";
+      if (!f) return;
+      const fd = new FormData(); fd.append("file", f);
+      const r = await fetch("/api/upload", { method: "POST", body: fd });
+      const j = await r.json();
+      if (!r.ok) { $("msg").textContent = j.error; return; }
+      $("pt").length = 1; $("pt").value = "";
+      load();
+    }
+    ["up", "pick"].forEach(id => $(id).onclick = () => $("file").click());
+    $("file").onchange = e => { upload(e.target.files[0]); e.target.value = ""; };
+    $("pt").onchange = load;
+    const dz = $("drop");
+    dz.ondragover = e => { e.preventDefault(); dz.classList.add("over"); };
+    dz.ondragleave = () => dz.classList.remove("over");
+    dz.ondrop = e => { e.preventDefault(); dz.classList.remove("over"); upload(e.dataTransfer.files[0]); };
+    load();
+  </script>
 </body>
+
 </html>
